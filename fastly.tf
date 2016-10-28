@@ -30,7 +30,7 @@ resource "fastly_service_v1" "myservice" {
   }
 
   vcl {
-    name    = "json-generate.vcl"
-    content = "${file("files/json-generate.vcl")}"
+    name    = "json_generate.vcl"
+    content = "${file("files/json_generate.vcl")}"
   }
 }

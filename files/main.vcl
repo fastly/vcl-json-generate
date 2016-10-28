@@ -1,4 +1,4 @@
-include "json-generate.vcl";
+include "json_generate.vcl";
 
 sub vcl_recv {
   error 800;
