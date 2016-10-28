@@ -16,12 +16,22 @@ sub vcl_error {
 
     set req.http.value = "integer";
     call string;
-    set req.http.value = "123";
+    set req.http.value = "42";
+    call number;
+
+    set req.http.value = "pi";
+    call string;
+    set req.http.value = "3.141592653589793238462643383279";
+    call number;
+
+    set req.http.value = "exponent";
+    call string;
+    set req.http.value = "1E400";
     call number;
 
     set req.http.value = "string";
     call string;
-    set req.http.value = "abc";
+    set req.http.value = "The quick brown fox";
     call string;
 
     set req.http.value = "null";
