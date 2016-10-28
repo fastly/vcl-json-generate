@@ -143,7 +143,7 @@ sub bool {
   call ensure_not_key;
   call insert_sep;
   call insert_whitespace;
-  if (std.atoi(req.http.value) == "1") {
+  if (std.atoi(req.http.value) == 1) {
     set req.http.yajl = req.http.yajl + "true";
   } else {
     set req.http.yajl = req.http.yajl + "false";
