@@ -12,10 +12,10 @@ sub reset {
     call number;
     call string;
     call bool;
-    call map_open;
-    call map_close;
-    call array_open;
-    call array_close;
+    call begin_object;
+    call end_object;
+    call begin_array;
+    call end_array;
   }
 }
 
@@ -254,7 +254,7 @@ sub bool {
 #    FINAL_NEWLINE;
 #    return yajl_gen_status_ok;
 #}
-sub map_open {
+sub begin_object {
   call ensure_valid_state;
   call ensure_not_key;
   call insert_sep;
@@ -281,7 +281,7 @@ sub map_open {
 #    FINAL_NEWLINE;
 #    return yajl_gen_status_ok;
 #}
-sub map_close {
+sub end_object {
   call ensure_valid_state;
   call decrement_depth;
   if (req.http.yajl_beautify) {
@@ -304,7 +304,7 @@ sub map_close {
 #    FINAL_NEWLINE;
 #    return yajl_gen_status_ok;
 #}
-sub array_open {
+sub begin_array {
   call ensure_valid_state;
   call ensure_not_key;
   call insert_sep;
@@ -330,7 +330,7 @@ sub array_open {
 #    FINAL_NEWLINE;
 #    return yajl_gen_status_ok;
 #}
-sub array_close {
+sub end_array {
   call ensure_valid_state;
   call decrement_depth;
   if (req.http.yajl_beautify) {

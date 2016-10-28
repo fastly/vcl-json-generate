@@ -12,7 +12,7 @@ sub vcl_error {
 
     call reset;
     set req.http.yajl_beautify = "1";
-    call map_open;
+    call begin_object;
 
     set req.http.value = "integer";
     call string;
@@ -50,7 +50,7 @@ sub vcl_error {
 
     set req.http.value = "map";
     call string;
-    call map_open;
+    call begin_object;
 
     set req.http.value = "key";
     call string;
@@ -59,7 +59,7 @@ sub vcl_error {
 
     set req.http.value = "array";
     call string;
-    call array_open;
+    call begin_array;
 
     set req.http.value = "1";
     call number;
@@ -68,11 +68,11 @@ sub vcl_error {
     set req.http.value = "3";
     call number;
 
-    call array_close;
+    call end_array;
 
-    call map_close;
+    call end_object;
 
-    call map_close;
+    call end_object;
 
     synthetic req.http.yajl;
     return (deliver);
