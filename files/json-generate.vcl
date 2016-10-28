@@ -1,108 +1,108 @@
-sub reset {
-  set req.http.yajl = "";
+sub json_generate_reset {
+  set req.http.json_generate_json = "";
   unset req.http.value;
-  unset req.http.yajl_new_state;
-  set req.http.yajl_state = "start";
-  set req.http.yajl_states = "";
-  set req.http.yajl_beautify = "0";
-  set req.http.yajl_beautify_spaces = "";
+  unset req.http.json_generate_new_state;
+  set req.http.json_generate_state = "start";
+  set req.http.json_generate_states = "";
+  unset req.http.json_generate_beautify;
+  set req.http.json_generate_beautify_spaces = "";
   # Avoid "Unused function" error
   if (req.http.xyzzy == "xyzzy") {
-    call null;
-    call number;
-    call string;
-    call bool;
-    call begin_object;
-    call end_object;
-    call begin_array;
-    call end_array;
+    call json_generate_null;
+    call json_generate_number;
+    call json_generate_string;
+    call json_generate_bool;
+    call json_generate_begin_object;
+    call json_generate_end_object;
+    call json_generate_begin_array;
+    call json_generate_end_array;
   }
 }
 
-sub ensure_valid_state {
-  if (req.http.yajl_state == "error") {
+sub json_generate_ensure_valid_state {
+  if (req.http.json_generate_state == "error") {
     # error 999 "ensure_valid_state: error";
-  } else if (req.http.yajl_state == "complete") {
+  } else if (req.http.json_generate_state == "complete") {
     # error 999 "ensure_valid_state: complete";
   }
 }
 
-sub increment_depth {
-  set req.http.yajl_beautify_spaces = req.http.yajl_beautify_spaces + "_";
-  set req.http.yajl_states = req.http.yajl_state + "," + req.http.yajl_states;
-  set req.http.yajl_state = req.http.yajl_new_state;
-  unset req.http.yajl_new_state;
+sub json_generate_increment_depth {
+  set req.http.json_generate_beautify_spaces = req.http.json_generate_beautify_spaces + "_";
+  set req.http.json_generate_states = req.http.json_generate_state + "," + req.http.json_generate_states;
+  set req.http.json_generate_state = req.http.json_generate_new_state;
+  unset req.http.json_generate_new_state;
 }
 
-sub decrement_depth {
-  set req.http.yajl_beautify_spaces = regsub(req.http.yajl_beautify_spaces, "^_", "");
-  if (req.http.yajl_states ~ "^([^,]+),") {
-    set req.http.yajl_state = re.group.1;
-    set req.http.yajl_states = regsub(req.http.yajl_states, "^([^,]+),", "");
+sub json_generate_decrement_depth {
+  set req.http.json_generate_beautify_spaces = regsub(req.http.json_generate_beautify_spaces, "^_", "");
+  if (req.http.json_generate_states ~ "^([^,]+),") {
+    set req.http.json_generate_state = re.group.1;
+    set req.http.json_generate_states = regsub(req.http.json_generate_states, "^([^,]+),", "");
   }
 }
 
-sub ensure_not_key {
-  if (req.http.yajl_state == "map_key" || req.http.yajl_state == "map_start" ) {
-    set req.http.yajl_state = "error";
+sub json_generate_ensure_not_key {
+  if (req.http.json_generate_state == "map_key" || req.http.json_generate_state == "map_start" ) {
+    set req.http.json_generate_state = "error";
     # error 999 "ensure_not_key: keys must be strings";
   }
 }
 
-sub insert_sep {
-  if (req.http.yajl_state == "map_key" || req.http.yajl_state == "in_array") {
-    set req.http.yajl = req.http.yajl + ",";
-    if (req.http.yajl_beautify) {
-      set req.http.yajl = req.http.yajl + LF;
+sub json_generate_insert_sep {
+  if (req.http.json_generate_state == "map_key" || req.http.json_generate_state == "in_array") {
+    set req.http.json_generate_json = req.http.json_generate_json + ",";
+    if (req.http.json_generate_beautify) {
+      set req.http.json_generate_json = req.http.json_generate_json + LF;
     }
-  } else if (req.http.yajl_state == "map_val") {
-    set req.http.yajl = req.http.yajl + ":";
-    if (req.http.yajl_beautify) {
-      set req.http.yajl = req.http.yajl + " ";
-    }
-  }
-}
-
-sub insert_whitespace {
-  if (req.http.yajl_beautify) {
-    if (req.http.yajl_state != "map_val") {
-      set req.http.yajl = req.http.yajl + regsuball(req.http.yajl_beautify_spaces, "_", " ");
+  } else if (req.http.json_generate_state == "map_val") {
+    set req.http.json_generate_json = req.http.json_generate_json + ":";
+    if (req.http.json_generate_beautify) {
+      set req.http.json_generate_json = req.http.json_generate_json + " ";
     }
   }
 }
 
-sub appended_atom {
-  if (req.http.yajl_state == "start") {
-    set req.http.yajl_state = "complete";
-  } else if (req.http.yajl_state == "map_start" || req.http.yajl_state == "map_key") {
-    set req.http.yajl_state = "map_val";
-  } else if (req.http.yajl_state == "array_start") {
-    set req.http.yajl_state = "in_array";
-  } else if (req.http.yajl_state == "map_val") {
-    set req.http.yajl_state = "map_key";
+sub json_generate_insert_whitespace {
+  if (req.http.json_generate_beautify) {
+    if (req.http.json_generate_state != "map_val") {
+      set req.http.json_generate_json = req.http.json_generate_json + regsuball(req.http.json_generate_beautify_spaces, "_", " ");
+    }
   }
 }
 
-sub final_newline {
-    if (req.http.yajl_beautify && req.http.yajl_state == "complete") {
-      set req.http.yajl = req.http.yajl + LF;
+sub json_generate_appended_atom {
+  if (req.http.json_generate_state == "start") {
+    set req.http.json_generate_state = "complete";
+  } else if (req.http.json_generate_state == "map_start" || req.http.json_generate_state == "map_key") {
+    set req.http.json_generate_state = "map_val";
+  } else if (req.http.json_generate_state == "array_start") {
+    set req.http.json_generate_state = "in_array";
+  } else if (req.http.json_generate_state == "map_val") {
+    set req.http.json_generate_state = "map_key";
+  }
+}
+
+sub json_generate_final_newline {
+    if (req.http.json_generate_beautify && req.http.json_generate_state == "complete") {
+      set req.http.json_generate_json = req.http.json_generate_json + LF;
     }
 }
 
-sub number {
-  call ensure_valid_state;
-  call ensure_not_key;
-  call insert_sep;
-  call insert_whitespace;
-  set req.http.yajl = req.http.yajl + req.http.value;
-  call appended_atom;
-  call final_newline;
+sub json_generate_number {
+  call json_generate_ensure_valid_state;
+  call json_generate_ensure_not_key;
+  call json_generate_insert_sep;
+  call json_generate_insert_whitespace;
+  set req.http.json_generate_json = req.http.json_generate_json + req.http.value;
+  call json_generate_appended_atom;
+  call json_generate_final_newline;
 }
 
-sub string {
-  call ensure_valid_state;
-  call insert_sep;
-  call insert_whitespace;
+sub json_generate_string {
+  call json_generate_ensure_valid_state;
+  call json_generate_insert_sep;
+  call json_generate_insert_whitespace;
   set req.http.value = regsuball(req.http.value, "%5C%5C", "%5C%5C%5C%5C");
   set req.http.value = regsuball(req.http.value, "%22", "%5C%5C%22");
   set req.http.value = regsuball(req.http.value, "%2F", "%5C%5C%2F");
@@ -111,83 +111,83 @@ sub string {
   set req.http.value = regsuball(req.http.value, "%0A", "%5C%5C%6E");
   set req.http.value = regsuball(req.http.value, "%0D", "%5C%5C%72");
   set req.http.value = regsuball(req.http.value, "%09", "%5C%5C%74");
-  set req.http.yajl = req.http.yajl + {"""} + req.http.value + {"""};
-  call appended_atom;
-  call final_newline;
+  set req.http.json_generate_json = req.http.json_generate_json + {"""} + req.http.value + {"""};
+  call json_generate_appended_atom;
+  call json_generate_final_newline;
 }
 
-sub null {
-  call ensure_valid_state;
-  call ensure_not_key;
-  call insert_sep;
-  call insert_whitespace;
-  set req.http.yajl = req.http.yajl + "null";
-  call appended_atom;
-  call final_newline;
+sub json_generate_null {
+  call json_generate_ensure_valid_state;
+  call json_generate_ensure_not_key;
+  call json_generate_insert_sep;
+  call json_generate_insert_whitespace;
+  set req.http.json_generate_json = req.http.json_generate_json + "null";
+  call json_generate_appended_atom;
+  call json_generate_final_newline;
 }
 
-sub bool {
-  call ensure_valid_state;
-  call ensure_not_key;
-  call insert_sep;
-  call insert_whitespace;
+sub json_generate_bool {
+  call json_generate_ensure_valid_state;
+  call json_generate_ensure_not_key;
+  call json_generate_insert_sep;
+  call json_generate_insert_whitespace;
   if (std.atoi(req.http.value) == 1) {
-    set req.http.yajl = req.http.yajl + "true";
+    set req.http.json_generate_json = req.http.json_generate_json + "true";
   } else {
-    set req.http.yajl = req.http.yajl + "false";
+    set req.http.json_generate_json = req.http.json_generate_json + "false";
   }
-  call appended_atom;
-  call final_newline;
+  call json_generate_appended_atom;
+  call json_generate_final_newline;
 }
 
-sub begin_object {
-  call ensure_valid_state;
-  call ensure_not_key;
-  call insert_sep;
-  call insert_whitespace;
-  set req.http.yajl_new_state = "map_start";
-  call increment_depth;
-  set req.http.yajl = req.http.yajl + "{";
-  if (req.http.yajl_beautify) {
-    set req.http.yajl = req.http.yajl + LF;
+sub json_generate_begin_object {
+  call json_generate_ensure_valid_state;
+  call json_generate_ensure_not_key;
+  call json_generate_insert_sep;
+  call json_generate_insert_whitespace;
+  set req.http.json_generate_new_state = "map_start";
+  call json_generate_increment_depth;
+  set req.http.json_generate_json = req.http.json_generate_json + "{";
+  if (req.http.json_generate_beautify) {
+    set req.http.json_generate_json = req.http.json_generate_json + LF;
   }
-  call final_newline;
+  call json_generate_final_newline;
 }
 
-sub end_object {
-  call ensure_valid_state;
-  call decrement_depth;
-  if (req.http.yajl_beautify) {
-    set req.http.yajl = req.http.yajl + LF;
+sub json_generate_end_object {
+  call json_generate_ensure_valid_state;
+  call json_generate_decrement_depth;
+  if (req.http.json_generate_beautify) {
+    set req.http.json_generate_json = req.http.json_generate_json + LF;
   }
-  call appended_atom;
-  call insert_whitespace;
-  set req.http.yajl = req.http.yajl + "}";
-  call final_newline;
+  call json_generate_appended_atom;
+  call json_generate_insert_whitespace;
+  set req.http.json_generate_json = req.http.json_generate_json + "}";
+  call json_generate_final_newline;
 }
 
-sub begin_array {
-  call ensure_valid_state;
-  call ensure_not_key;
-  call insert_sep;
-  call insert_whitespace;
-  set req.http.yajl_new_state = "array_start";
-  call increment_depth;
-  set req.http.yajl = req.http.yajl + "[";
-  if (req.http.yajl_beautify) {
-    set req.http.yajl = req.http.yajl + LF;
+sub json_generate_begin_array {
+  call json_generate_ensure_valid_state;
+  call json_generate_ensure_not_key;
+  call json_generate_insert_sep;
+  call json_generate_insert_whitespace;
+  set req.http.json_generate_new_state = "array_start";
+  call json_generate_increment_depth;
+  set req.http.json_generate_json = req.http.json_generate_json + "[";
+  if (req.http.json_generate_beautify) {
+    set req.http.json_generate_json = req.http.json_generate_json + LF;
   }
-  call final_newline;
+  call json_generate_final_newline;
 }
 
-sub end_array {
-  call ensure_valid_state;
-  call decrement_depth;
-  if (req.http.yajl_beautify) {
-    set req.http.yajl = req.http.yajl + LF;
+sub json_generate_end_array {
+  call json_generate_ensure_valid_state;
+  call json_generate_decrement_depth;
+  if (req.http.json_generate_beautify) {
+    set req.http.json_generate_json = req.http.json_generate_json + LF;
   }
-  call appended_atom;
-  call insert_whitespace;
-  set req.http.yajl = req.http.yajl + "]";
-  call final_newline;
+  call json_generate_appended_atom;
+  call json_generate_insert_whitespace;
+  set req.http.json_generate_json = req.http.json_generate_json + "]";
+  call json_generate_final_newline;
 }
