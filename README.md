@@ -9,7 +9,7 @@ It is heavily influenced by [YAJL](http://lloyd.github.io/yajl/).
 
 # Synopsis
 
-```
+```vcl
 include "json_generate.vcl";
 call json_generate_reset;
 set req.http.json_generate_beautify = "1";
@@ -31,7 +31,7 @@ call json_generate_end_object;
 
 Now `req.http.json_generate_json` contains:
 
-```
+```JSON
 {
   "integer": 42,
   "string": "The quick brown fox"
@@ -39,7 +39,8 @@ Now `req.http.json_generate_json` contains:
 ```
 
 If you don't set `req.http.json_generate_beautify` then instead you get:
-```
+
+```JSON
 {"integer":42,"string":"The quick brown fox"}
 ```
 
