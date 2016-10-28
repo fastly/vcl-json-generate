@@ -1,7 +1,11 @@
 sub reset {
   set req.http.yajl = "";
   unset req.http.value;
+  unset req.http.yajl_new_state;
   set req.http.yajl_state = "start";
+  set req.http.yajl_states = "";
+  set req.http.yajl_beautify = "0";
+  set req.http.yajl_beautify_spaces = "";
   # Avoid "Unused function" error
   if (req.http.xyzzy == "xyzzy") {
     call null;
@@ -32,6 +36,27 @@ sub ensure_valid_state {
   }
 }
 
+##define INCREMENT_DEPTH \
+#    if (++(g->depth) >= YAJL_MAX_DEPTH) return yajl_max_depth_exceeded;
+
+sub increment_depth {
+  set req.http.yajl_beautify_spaces = req.http.yajl_beautify_spaces + "_";
+  set req.http.yajl_states = req.http.yajl_state + "," + req.http.yajl_states;
+  set req.http.yajl_state = req.http.yajl_new_state;
+  unset req.http.yajl_new_state;
+}
+
+##define DECREMENT_DEPTH \
+#  if (--(g->depth) >= YAJL_MAX_DEPTH) return yajl_gen_generation_complete;
+
+sub decrement_depth {
+  set req.http.yajl_beautify_spaces = regsub(req.http.yajl_beautify_spaces, "^_", "");
+  if (req.http.yajl_states ~ "^([^,]+),") {
+    set req.http.yajl_state = re.group.1;
+    set req.http.yajl_states = regsub(req.http.yajl_states, "^([^,]+),", "");
+  }
+}
+
 ##define ENSURE_NOT_KEY \
 #    if (g->state[g->depth] == yajl_gen_map_key ||       \
 #        g->state[g->depth] == yajl_gen_map_start)  {    \
@@ -55,8 +80,14 @@ sub ensure_not_key {
 sub insert_sep {
   if (req.http.yajl_state == "map_key" || req.http.yajl_state == "in_array") {
     set req.http.yajl = req.http.yajl + ",";
+    if (req.http.yajl_beautify) {
+      set req.http.yajl = req.http.yajl + LF;
+    }
   } else if (req.http.yajl_state == "map_val") {
     set req.http.yajl = req.http.yajl + ":";
+    if (req.http.yajl_beautify) {
+      set req.http.yajl = req.http.yajl + " ";
+    }
   }
 }
 
@@ -71,6 +102,11 @@ sub insert_sep {
 #        }                                                               \
 #    }
 sub insert_whitespace {
+  if (req.http.yajl_beautify) {
+    if (req.http.yajl_state != "map_val") {
+      set req.http.yajl = req.http.yajl + regsuball(req.http.yajl_beautify_spaces, "_", " ");
+    }
+  }
 }
 
 ##define APPENDED_ATOM \
@@ -107,15 +143,10 @@ sub appended_atom {
 #    if ((g->flags & yajl_gen_beautify) && g->state[g->depth] == yajl_gen_complete) \
 #        g->print(g->ctx, "\n", 1);
 sub final_newline {
+    if (req.http.yajl_beautify && req.http.yajl_state == "complete") {
+      set req.http.yajl = req.http.yajl + LF;
+    }
 }
-
-#sub map_open {
-#  set req.http.yajl = req.http.yajl + "{";
-#}
-
-#sub map_close {
-#  set req.http.yajl = req.http.yajl + "}";
-#}
 
 #yajl_gen_status
 #yajl_gen_integer(yajl_gen g, long long int number)
@@ -228,9 +259,12 @@ sub map_open {
   call ensure_not_key;
   call insert_sep;
   call insert_whitespace;
-  set req.http.yajl_state = "map_start";
-  # call increment_depth
+  set req.http.yajl_new_state = "map_start";
+  call increment_depth;
   set req.http.yajl = req.http.yajl + "{";
+  if (req.http.yajl_beautify) {
+    set req.http.yajl = req.http.yajl + LF;
+  }
   call final_newline;
 }
 
@@ -249,7 +283,10 @@ sub map_open {
 #}
 sub map_close {
   call ensure_valid_state;
-  # call decrement_depth
+  call decrement_depth;
+  if (req.http.yajl_beautify) {
+    set req.http.yajl = req.http.yajl + LF;
+  }
   call appended_atom;
   call insert_whitespace;
   set req.http.yajl = req.http.yajl + "}";
@@ -272,9 +309,12 @@ sub array_open {
   call ensure_not_key;
   call insert_sep;
   call insert_whitespace;
-  set req.http.yajl_state = "array_start";
-  # call increment_depth
+  set req.http.yajl_new_state = "array_start";
+  call increment_depth;
   set req.http.yajl = req.http.yajl + "[";
+  if (req.http.yajl_beautify) {
+    set req.http.yajl = req.http.yajl + LF;
+  }
   call final_newline;
 }
 
@@ -292,8 +332,10 @@ sub array_open {
 #}
 sub array_close {
   call ensure_valid_state;
-  # call decrement_depth
-  set req.http.yajl_state = "map_start";
+  call decrement_depth;
+  if (req.http.yajl_beautify) {
+    set req.http.yajl = req.http.yajl + LF;
+  }
   call appended_atom;
   call insert_whitespace;
   set req.http.yajl = req.http.yajl + "]";

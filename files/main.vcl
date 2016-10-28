@@ -11,6 +11,7 @@ sub vcl_error {
     set obj.http.Content-Type = "text/html; charset=utf-8";
 
     call reset;
+    set req.http.yajl_beautify = "1";
     call map_open;
 
     set req.http.value = "integer";
