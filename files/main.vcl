@@ -34,6 +34,46 @@ sub vcl_error {
     set req.http.value = "The quick brown fox";
     call string;
 
+    set req.http.value = "string with quotation mark";
+    call string;
+    set req.http.value = {"It's "The quick brown fox", he said."};
+    call string;
+
+    set req.http.value = "string with solidus";
+    call string;
+    set req.http.value = "cat /etc/passwd";
+    call string;
+
+    set req.http.value = "string with reverse solidus";
+    call string;
+    set req.http.value = "escape\me";
+    call string;
+
+    set req.http.value = "string with %08 backspace";
+    call string;
+    set req.http.value = "cat%08%08%08dog";
+    call string;
+
+    set req.http.value = "string with %0C form feed";
+    call string;
+    set req.http.value = "form%0Cfeed";
+    call string;
+
+    set req.http.value = "string with %0A line feed";
+    call string;
+    set req.http.value = "line%0Afeed";
+    call string;
+
+    set req.http.value = "string with %0D carriage return";
+    call string;
+    set req.http.value = "carriage%0Dreturn";
+    call string;
+
+    set req.http.value = "string with %09 tab";
+    call string;
+    set req.http.value = "tab%09tab%09tab";
+    call string;
+
     set req.http.value = "null";
     call string;
     call null;

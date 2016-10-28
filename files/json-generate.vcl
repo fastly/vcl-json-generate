@@ -99,30 +99,18 @@ sub number {
   call final_newline;
 }
 
-#yajl_gen_status
-#yajl_gen_string(yajl_gen g, const unsigned char * str,
-#                size_t len)
-#{
-#    // if validation is enabled, check that the string is valid utf8
-#    // XXX: This checking could be done a little faster, in the same pass as
-#    // the string encoding
-#    if (g->flags & yajl_gen_validate_utf8) {
-#        if (!yajl_string_validate_utf8(str, len)) {
-#            return yajl_gen_invalid_string;
-#        }
-#    }
-#    ENSURE_VALID_STATE; INSERT_SEP; INSERT_WHITESPACE;
-#    g->print(g->ctx, "\"", 1);
-#    yajl_string_encode(g->print, g->ctx, str, len, g->flags & yajl_gen_escape_solidus);
-#    g->print(g->ctx, "\"", 1);
-#    APPENDED_ATOM;
-#    FINAL_NEWLINE;
-#    return yajl_gen_status_ok;
-#}
 sub string {
   call ensure_valid_state;
   call insert_sep;
   call insert_whitespace;
+  set req.http.value = regsuball(req.http.value, "%5C%5C", "%5C%5C%5C%5C");
+  set req.http.value = regsuball(req.http.value, "%22", "%5C%5C%22");
+  set req.http.value = regsuball(req.http.value, "%2F", "%5C%5C%2F");
+  set req.http.value = regsuball(req.http.value, "%08", "%5C%5C%62");
+  set req.http.value = regsuball(req.http.value, "%0C", "%5C%5C%66");
+  set req.http.value = regsuball(req.http.value, "%0A", "%5C%5C%6E");
+  set req.http.value = regsuball(req.http.value, "%0D", "%5C%5C%72");
+  set req.http.value = regsuball(req.http.value, "%09", "%5C%5C%74");
   set req.http.yajl = req.http.yajl + {"""} + req.http.value + {"""};
   call appended_atom;
   call final_newline;
