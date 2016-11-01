@@ -59,7 +59,7 @@ Now `req.http.json_generate_json` contains something like:
 If you don't set `req.http.json_generate_beautify` then instead you get:
 
 ```JSON
-{"timestamp":"Tue, 01 Nov 2016 13:28:02 GMT","latitude": 51.533,"longitude":-0.100,"city":"Islington","country":"United Kingdom"}
+{"timestamp":"Tue, 01 Nov 2016 13:28:02 GMT","latitude":51.533,"longitude":-0.100,"city":"Islington","country":"United Kingdom"}
 ```
 
 You can see this for yourself as the service is currently running at:
