@@ -14,9 +14,6 @@ include "json_generate.vcl";
 call json_generate_reset;
 set req.http.json_generate_beautify = "1";
 
-
-call json_generate_reset;
-set req.http.json_generate_beautify = "1";
 call json_generate_begin_object;
 
 set req.http.value = "timestamp";
