@@ -4,6 +4,85 @@ sub vcl_recv {
   error 800;
 }
 
+sub vcl_log {
+  call json_generate_reset;
+  call json_generate_begin_object;
+
+  set req.http.value = "client.ip";
+  call json_generate_string;
+  set req.http.value = client.ip;
+  call json_generate_string;
+
+  set req.http.value = "req.request";
+  call json_generate_string;
+  set req.http.value = req.request;
+  call json_generate_string;
+
+  set req.http.value = "req.http.host";
+  call json_generate_string;
+  set req.http.value = req.http.host;
+  call json_generate_string;
+
+  set req.http.value = "req.request";
+  call json_generate_string;
+  set req.http.value = req.request;
+  call json_generate_string;
+
+  set req.http.value = "req.url";
+  call json_generate_string;
+  set req.http.value = req.url;
+  call json_generate_string;
+
+  set req.http.value = "req.bytes_read";
+  call json_generate_string;
+  set req.http.value = req.bytes_read;
+  call json_generate_number;
+
+  set req.http.value = "resp.status";
+  call json_generate_string;
+  set req.http.value = resp.status;
+  call json_generate_number;
+
+  set req.http.value = "resp.bytes_written";
+  call json_generate_string;
+  set req.http.value = resp.bytes_written;
+  call json_generate_number;
+
+  set req.http.value = "resp.http.X-Cache";
+  call json_generate_string;
+  set req.http.value = resp.http.X-Cache;
+  call json_generate_string;
+
+  set req.http.value = "fastly_info.state";
+  call json_generate_string;
+  set req.http.value = fastly_info.state;
+  call json_generate_string;
+
+  set req.http.value = "time.start.usec";
+  call json_generate_string;
+  set req.http.value = time.start.usec;
+  call json_generate_number;
+
+  set req.http.value = "time.start.iso8601";
+  call json_generate_string;
+  set req.http.value = strftime("%25F %25T", time.start);
+  call json_generate_string;
+
+  set req.http.value = "time.end.usec";
+  call json_generate_string;
+  set req.http.value = time.end.usec;
+  call json_generate_number;
+
+  set req.http.value = "time.elapsed.usec";
+  call json_generate_string;
+  set req.http.value = time.elapsed.usec;
+  call json_generate_number;
+
+
+  call json_generate_end_object;
+  log {"syslog 1BSTtz9G2bRixL6KzYQnGI Papertrail :: "} req.http.json_generate_json;
+}
+
 sub vcl_error {
   if (obj.status == 800) {
 
