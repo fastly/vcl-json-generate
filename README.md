@@ -65,6 +65,38 @@ If you don't set `req.http.json_generate_beautify` then instead you get:
 You can see this for yourself as the service is currently running at:
 http://terraform-fastly-yajl.astray.com.global.prod.fastly.net/
 
+[json_generate.vcl](files/json_generate.vcl) contains the library while
+[main.vcl](files/main.vcl) has full examples of how to call it.
+
+In the above we also generate JSON logs, which look something like:
+
+```
+{"client.ip":"5.148.132.132","req.request":"GET","req.http.host":"terraform-fastly-yajl.astray.com","req.request":"GET","req.url":"\/secret\/page.html","req.bytes_read":192,"resp.status":200,"resp.bytes_written":881,"resp.http.X-Cache":"HIT","fastly_info.state":"HIT-SYNTH","time.start.usec":1479733291788643,"time.start.iso8601":"2016-11-21 13:01:31","time.end.usec":1479733291793328,"time.elapsed.usec":4684}
+```
+
+If we pretty print the above, it is:
+
+```
+{
+  "client.ip": "5.148.132.132",
+  "req.request": "GET",
+  "req.http.host": "terraform-fastly-yajl.astray.com",
+  "req.url": "/secret/page.html",
+  "req.bytes_read": 192,
+  "resp.status": 200,
+  "resp.bytes_written": 881,
+  "resp.http.X-Cache": "HIT",
+  "fastly_info.state": "HIT-SYNTH",
+  "time.start.usec": 1479733291788643,
+  "time.start.iso8601": "2016-11-21 13:01:31",
+  "time.end.usec": 1479733291793328,
+  "time.elapsed.usec": 4684
+}
+```
+
+You should be able to pipe these JSON logs into Splunk, Logstash,
+BigQuery etc.
+
 # Contributing?
 
 Send a pull request.
