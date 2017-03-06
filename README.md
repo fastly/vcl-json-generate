@@ -141,7 +141,7 @@ call json_generate_end_array;
 call json_generate_end_object;
 
 call json_generate_end_object;
-      return (deliver);
+return (deliver);
 ```
 
 `req.http.json_generate_json` contains:
@@ -301,7 +301,7 @@ Another great use is logging JSON objects. If you use [version 2 log format](htt
 ... will log the following to your logging endpoint:
 
 ```json
-{"client.ip":"5.148.300.300","req.request":"GET","req.http.host":"terraform-fastly-yajl.astray.com","req.request":"GET","req.url":"\/hello-world-pretty","req.bytes_read":524,"resp.status":200,"resp.bytes_written":285,"resp.http.X-Cache":"HIT","fastly_info.state":"HIT-SYNTH","time.start.usec":1488810945469257,"time.start.iso8601":"2017-03-06 14:35:45","time.end.usec":1488810945469498,"time.elapsed.usec":240}
+{"client.ip":"5.148.300.300","req.request":"GET","req.http.host":"vcl-json-generate.global.ssl.fastly.net","req.request":"GET","req.url":"\/hello-world-pretty","req.bytes_read":524,"resp.status":200,"resp.bytes_written":285,"resp.http.X-Cache":"HIT","fastly_info.state":"HIT-SYNTH","time.start.usec":1488810945469257,"time.start.iso8601":"2017-03-06 14:35:45","time.end.usec":1488810945469498,"time.elapsed.usec":240}
 ```
 
 If we pretty print the above, it is:
@@ -310,7 +310,7 @@ If we pretty print the above, it is:
 {
   "client.ip": "5.148.300.300",
   "req.request": "GET",
-  "req.http.host": "terraform-fastly-yajl.astray.com",
+  "req.http.host": "vcl-json-generate.global.ssl.fastly.net",
   "req.request": "GET",
   "req.url": "\/hello-world-pretty",
   "req.bytes_read": 524,
