@@ -7,3 +7,13 @@ variable "domain" {
   type        = "string"
   description = "Domain name"
 }
+
+variable "papertrail_address" {
+  type        = "string"
+  description = "Papertrail address"
+}
+
+variable "papertrail_port" {
+  type        = "string"
+  description = "Papertrail port"
+}
