@@ -1,2 +1,7 @@
 fastly_api_key = "..."
+
 domain = "..."
+
+papertrail_address = "..."
+
+papertrail_port = ...

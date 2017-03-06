@@ -11,15 +11,6 @@ resource "fastly_service_v1" "myservice" {
     name = "${var.domain}"
   }
 
-  # The following is needed to work around:
-  # https://github.com/hashicorp/terraform/issues/7609
-  # Fastly provider: backends not mandatory when VCL defined
-  backend {
-    address = "127.0.0.1"
-    name    = "Nowhere"
-    port    = 1
-  }
-
   default_ttl   = 10
   force_destroy = true
 
@@ -32,5 +23,20 @@ resource "fastly_service_v1" "myservice" {
   vcl {
     name    = "json_generate.vcl"
     content = "${file("files/json_generate.vcl")}"
+  }
+
+  condition {
+    name      = "Disable"
+    statement = "!req.url"
+    priority  = 10
+    type      = "response"
+  }
+
+  papertrail {
+    name               = "Papertrail"
+    format             = "req.http.log"
+    address            = "${var.papertrail_address}"
+    port               = "${var.papertrail_port}"
+    response_condition = "Disable"
   }
 }
