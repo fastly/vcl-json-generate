@@ -336,6 +336,10 @@ This directory includes a Terraform example.
 
 Send a pull request.
 
+## License
+
+The code is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+
 ## Future
 
 Is this useful? Let me know! Léon Brocard <<lbrocard@fastly.com>>
