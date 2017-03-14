@@ -239,11 +239,6 @@ Another great use is logging JSON objects. If you use [version 2 log format](htt
   set req.http.value = req.http.host;
   call json_generate_string;
 
-  set req.http.value = "req.request";
-  call json_generate_string;
-  set req.http.value = req.request;
-  call json_generate_string;
-
   set req.http.value = "req.url";
   call json_generate_string;
   set req.http.value = req.url;
