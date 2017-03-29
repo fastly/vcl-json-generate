@@ -307,7 +307,7 @@ If we pretty print the above, it is:
   "req.request": "GET",
   "req.http.host": "vcl-json-generate.global.ssl.fastly.net",
   "req.request": "GET",
-  "req.url": "\/hello-world-pretty",
+  "req.url": "/hello-world-pretty",
   "req.bytes_read": 524,
   "resp.status": 200,
   "resp.bytes_written": 285,
