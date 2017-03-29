@@ -1,3 +1,8 @@
+# Name: json_generate
+# Version: 0.2.0
+# Description: Generate JSON
+# License: MIT
+
 sub json_generate_reset {
   set req.http.json_generate_json = "";
   unset req.http.value;
@@ -105,7 +110,6 @@ sub json_generate_string {
   call json_generate_insert_whitespace;
   set req.http.value = regsuball(req.http.value, "%5C%5C", "%5C%5C%5C%5C");
   set req.http.value = regsuball(req.http.value, "%22", "%5C%5C%22");
-  set req.http.value = regsuball(req.http.value, "%2F", "%5C%5C%2F");
   set req.http.value = regsuball(req.http.value, "%08", "%5C%5C%62");
   set req.http.value = regsuball(req.http.value, "%0C", "%5C%5C%66");
   set req.http.value = regsuball(req.http.value, "%0A", "%5C%5C%6E");

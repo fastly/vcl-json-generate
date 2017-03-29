@@ -111,7 +111,7 @@ sub vcl_error {
       set req.http.value = "/geoip";
       call json_generate_string;
       call json_generate_end_object;
-      set req.http.json_generate_json = regsuball(req.http.json_generate_json, {""\\/(.+?)""}, {"<a href="/\1">"\\/\1"</a>"});
+      set req.http.json_generate_json = regsuball(req.http.json_generate_json, {""/(.+?)""}, {"<a href="/\1">"/\1"</a>"});
       synthetic "<pre>" + req.http.json_generate_json + "</pre>";
       set obj.status = 200;
       set obj.response = "OK";
