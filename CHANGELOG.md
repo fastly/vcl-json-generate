@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Removed unnecessary capturing in a regular expression. No external changes.
+- Removed unnecessary capturing in two regular expressions. No external
+  changes.
 
 ## [0.2.0] - 2017-03-29
 
