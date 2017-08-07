@@ -331,6 +331,30 @@ This directory includes a Terraform example.
 
 Send a pull request.
 
+To run ESLint and the tests:
+
+```bash
+$ yarn install
+$ yarn run eslint
+$ yarn run test
+$ URI=https://vcl-json-generate.global.ssl.fastly.net yarn run test
+yarn run v0.27.5
+$ mocha
+
+
+  ✓ receives an HTML response from / (56ms)
+  ✓ receives a JSON response from /hello-world
+  ✓ receives a JSON response from /hello-world-pretty
+  ✓ receives a JSON response from /data-types
+  ✓ receives a JSON response from /kitchen-sink
+  ✓ receives a JSON response from /geoip (68ms)
+  ✓ receives a JSON response from /objects (53ms)
+
+  7 passing (271ms)
+
+Done in 0.66s.
+```
+
 ## License
 
 The code is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).

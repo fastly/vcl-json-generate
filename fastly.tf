@@ -11,6 +11,12 @@ resource "fastly_service_v1" "myservice" {
     name = "${var.domain}"
   }
 
+  backend {
+    address = "127.0.0.1"
+    name    = "localhost"
+    port    = 80
+  }
+
   default_ttl   = 10
   force_destroy = true
 
