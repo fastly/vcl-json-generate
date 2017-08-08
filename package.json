@@ -1,0 +1,20 @@
+{
+  "name": "vcl-json-generate",
+  "version": "0.3.0",
+  "description": "A module that allows you to generate JSON dynamically on Fastly cache nodes using VCL",
+  "main": "test/simple.js",
+  "repository": "git@github.com:fastly/vcl-json-generate.git",
+  "author": "Leon Brocard <lbrocard@fastly.com>",
+  "license": "MIT",
+  "dependencies": {},
+  "scripts": {
+    "eslint": "./node_modules/eslint/bin/eslint.js test/simple.js",
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "chai-http": "^3.0.0",
+    "eslint": "^4.4.0",
+    "mocha": "^3.5.0"
+  }
+}

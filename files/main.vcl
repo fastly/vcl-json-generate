@@ -110,6 +110,10 @@ sub vcl_error {
       call json_generate_string;
       set req.http.value = "/geoip";
       call json_generate_string;
+      set req.http.value = "Objects";
+      call json_generate_string;
+      set req.http.value = "/objects";
+      call json_generate_string;
       call json_generate_end_object;
       set req.http.json_generate_json = regsuball(req.http.json_generate_json, {""/(.+?)""}, {"<a href="/\1">"/\1"</a>"});
       synthetic "<pre>" + req.http.json_generate_json + "</pre>";
@@ -372,6 +376,73 @@ sub vcl_error {
       set obj.http.Content-Type = "application/json";
       return (deliver);
 
+    } else if (req.url == "/objects") {
+
+      call json_generate_reset;
+      set req.http.json_generate_beautify = "1";
+      call json_generate_begin_object;
+
+      set req.http.value = "integer";
+      call json_generate_string;
+      set req.http.value = "42";
+      call json_generate_number;
+
+      set req.http.value = "false";
+      call json_generate_string;
+      set req.http.value = "0";
+      call json_generate_bool;
+
+      set req.http.value = "map";
+      call json_generate_string;
+      call json_generate_begin_object;
+
+      set req.http.value = "key";
+      call json_generate_string;
+      set req.http.value = "value";
+      call json_generate_string;
+
+      set req.http.value = "array";
+      call json_generate_string;
+      call json_generate_begin_array;
+
+      set req.http.value = "1";
+      call json_generate_number;
+      set req.http.value = "2";
+      call json_generate_number;
+
+      call json_generate_end_array;
+
+      call json_generate_end_object;
+
+      set req.http.value = "map2";
+      call json_generate_string;
+      call json_generate_begin_object;
+
+      set req.http.value = "key";
+      call json_generate_string;
+      set req.http.value = "value";
+      call json_generate_string;
+
+      set req.http.value = "array";
+      call json_generate_string;
+      call json_generate_begin_array;
+
+      set req.http.value = "1";
+      call json_generate_number;
+      set req.http.value = "2";
+      call json_generate_number;
+
+      call json_generate_end_array;
+
+      call json_generate_end_object;
+
+      call json_generate_end_object;
+
+      synthetic req.http.json_generate_json;
+      set obj.status = 200;
+      set obj.response = "OK";
+      set obj.http.Content-Type = "application/json";
+      return (deliver);
     }
   }
 }

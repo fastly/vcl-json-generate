@@ -1,5 +1,5 @@
 # Name: json_generate
-# Version: 0.2.0
+# Version: 0.3.0
 # Description: Generate JSON
 # License: MIT
 
@@ -41,7 +41,7 @@ sub json_generate_increment_depth {
 
 sub json_generate_decrement_depth {
   set req.http.json_generate_beautify_spaces = regsub(req.http.json_generate_beautify_spaces, "^_", "");
-  if (req.http.json_generate_states ~ "^[^,]+,") {
+  if (req.http.json_generate_states ~ "^([^,]+),") {
     set req.http.json_generate_state = re.group.1;
     set req.http.json_generate_states = regsub(req.http.json_generate_states, "^[^,]+,", "");
   }
