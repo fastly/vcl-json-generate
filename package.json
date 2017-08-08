@@ -6,16 +6,15 @@
   "repository": "git@github.com:fastly/vcl-json-generate.git",
   "author": "Leon Brocard <lbrocard@fastly.com>",
   "license": "MIT",
-  "dependencies": {
-    "chai": "^4.1.1",
-    "chai-http": "^3.0.0",
-    "mocha": "^3.5.0"
-  },
+  "dependencies": {},
   "scripts": {
     "eslint": "./node_modules/eslint/bin/eslint.js test/simple.js",
     "test": "mocha"
   },
   "devDependencies": {
-    "eslint": "^4.4.0"
+    "chai": "^4.1.1",
+    "chai-http": "^3.0.0",
+    "eslint": "^4.4.0",
+    "mocha": "^3.5.0"
   }
 }
