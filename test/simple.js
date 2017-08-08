@@ -3,7 +3,7 @@ const chaiHttp = require('chai-http');
 const expect = require('chai').expect;
 chai.use(chaiHttp);
 
-const uri = process.env.URI;
+const uri = process.env.URI || 'https://vcl-json-generate.global.ssl.fastly.net';
 
 const paths = [
   "/hello-world",
