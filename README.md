@@ -16,6 +16,22 @@ does not support data structures, it is a little verbose.
 The module consists of a library, [json_generate.vcl](files/json_generate.vcl)
 which you can include in your Fastly service.
 
+## Alternative
+
+This module is suited for dynamic JSON generation. For fairly static content, it
+might be simpler to use
+[json.escape()](https://docs.fastly.com/vcl/functions/json-escape/) to escapes characters of a UTF-8 encoded Unicode string using JSON-style escape sequences:
+
+```vcl
+set req.http.json = "{%22" + json.escape("Hello") + "%22:%22" + json.escape("world") + "%22}";
+```
+
+`req.http.json` contains:
+
+```json
+{"Hello":"world"}
+```
+
 ## Synopsis
 
 To use this module you should upload
